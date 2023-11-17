@@ -40,20 +40,20 @@ unsigned char* dectohex(unsigned long long int dec)
 	for (i = 0; i < 8; ++i)
 		hex[i] = '0';
 	j = 0;
-		while ((temp > 0) && (j < 8))
+	while ((temp > 0) && (j < 8))
+	{
+		hh = temp % 16;
+		if ((hh >= 0) && (hh <= 9))
+			hex[j++] = '0' + hh;
+		else if ((hh >= 10) && (hh <= 15))
+			hex[j++] = 'A' + hh - 10;
+		else
 		{
-			hh = temp % 16;
-			if ((hh >= 0) && (hh <= 9))
-				hex[j++] = '0' + hh;
-			else if ((hh >= 10) && (hh <= 15))
-				hex[j++] = 'A' + hh - 10;
-			else
-			{
-				puts("Something wrong computing HEXCODE");
-				exit(1);
-			}
-			temp = temp / 16;
+			puts("Something wrong computing HEXCODE");
+			exit(1);
 		}
+		temp = temp / 16;
+	}
 	for (i = 0; i < 4; ++i)
 	{
 		tt = hex[i];
@@ -83,7 +83,7 @@ void dectobin(unsigned char* bin, unsigned long long int dec, int size)
 		bin[size - 1 - i] = tt;
 	}
 }
-/*show_binary() takes big binary integer as 2-d array form and display them in
+/*show_binary() takes binary integer  and display them in
 binary and coresponding hexa-decimal and decimal form*/
 void show_binary(unsigned char** elt, int I, int J)
 {
@@ -129,7 +129,7 @@ void copy_bigint(bigint* s, bigint* t, int size)
 	for (i = 0; i < size; ++i)
 		s[i] = t[i];
 }
-/*initialize() sets 0 to all bits of a large binary number (in 2-d array form)*/
+/*initialize() sets 0 to all bits of a large binary number */
 void initialize(unsigned char** elt, int I, int J)
 {
 	int i, j;
@@ -151,8 +151,7 @@ bigint lrot_dec(bigint var, unsigned int rot)
 	t2 = (var >> (32 - rot)) & ((Modulus - 1) >> (32 - rot));
 	return (t1 + t2) % Modulus;
 }
-/*add2() takes two 32*8 bit big binary numbers and add them and also output the
-boolean carry*/
+/*add2() takes two 32*8 bit binary numbers and add them */
 int add2(bigint* v1, bigint* v2, unsigned long long int carry_in, bigint* result)
 {
 	int i, j, k;
@@ -230,8 +229,7 @@ result in C*/
 (global)*/
 void KEYSETUP()
 {
-	unsigned char** x, ** c, ** key;/*Temporary binary representation of corresponding
-	variables*/
+	unsigned char** x, ** c, ** key;
 	int i, j;
 	x = (unsigned char**)malloc(sizeof(unsigned char*) * 8);
 	for (i = 0; i < 8; ++i)
@@ -392,7 +390,7 @@ void IVSETUP()
 	C[3] = C[3] ^ ((IV[2] << 16) + (IV[0]));
 	C[5] = C[5] ^ ((IV[3] << 16) + (IV[1]));
 	C[7] = C[7] ^ ((IV[2] << 16) + (IV[0]));
-	/*Iterating the system by calling NEXTSTATE() 4 times*/
+	/*Iterating 4 times the system by calling NEXTSTATE()*/
 	for (i = 0; i < 4; ++i)
 		NEXTSTATE();
 }
@@ -400,8 +398,6 @@ void IVSETUP()
 void GENERATE()
 {
 	int i, j, k, l, m;
-	/*Due to binary operations temporary binary variables are declared and
-	allocated*/
 	unsigned char** x, ** c;
 	x = (unsigned char**)malloc(sizeof(unsigned char*) * 8);
 	for (i = 0; i < 8; ++i)
@@ -416,7 +412,7 @@ void GENERATE()
 	}
 	initialize(s, 8, 32);
 	puts("-------------------------------");
-	puts("Output Stream:\n");
+	puts("Output Stream Rabbit:\n");
 	/*The system is iterated for 3 times to output 48-byte pseudorandom
 	bit-stream */
 	for (j = 0; j < ROUND; ++j)
@@ -424,10 +420,9 @@ void GENERATE()
 		NEXTSTATE();
 		for (i = 0; i < 8; ++i)
 		{
-			dectobin(x[i], X[i], 32);/*Decimal X (global) is converted to
-			binary x (local)*/
+			dectobin(x[i], X[i], 32);
 		}
-		/*Generate output by specified equations*/
+		/*Generate output */
 		for (i = 0; i < 16; ++i)
 		{
 			s[0][i + 16] = x[0][i + 16] ^ x[5][i];
@@ -455,7 +450,7 @@ int main()
 	char k;
 	KEYGEN();
 	KEYSETUP();
-	puts("Use IV is optional. Do you want to use IV ? (Press 1 for Yes and any  key for No)\n");
+	puts("Use 64 bit IV is optional.(Press 1 for using IV or any key for No)\n");
 	scanf_s("%d", &i);
 	if (i == 1)
 		IVSETUP();
