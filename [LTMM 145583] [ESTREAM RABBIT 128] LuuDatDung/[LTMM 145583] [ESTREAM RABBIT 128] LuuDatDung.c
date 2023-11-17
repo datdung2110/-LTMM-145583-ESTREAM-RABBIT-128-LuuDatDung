@@ -2,16 +2,14 @@
 #include<stdlib.h>
 #include<string.h>
 #include<math.h>
-#define ROUND 3 /*Changing this value would result change in the number of output
-bytes*/
+#define ROUND 3 /*number of output bytes*/
 #define bigint unsigned long long int
-/*Defining the Global Variables A is a constant so wev initialize it. Modulus = 2^32
-since all operations are done modulo 2^32. */
+
 unsigned char** s;
 bigint X[8], G[8], Key[8], C[8],
 A[8] = { 0x4D34D34D,0xD34D34D3,0x34D34D34,0x4D34D34D,0xD34D34D3,0x34D34D34,0x4D34D34D,0xD34D34D3 }, cy = 0,
 IV[4], Modulus = 4294967296;
-/*show() takes an array of bigint as input and display them */
+
 void show(bigint* elt, int I)
 {
 	int i, j;
@@ -20,7 +18,8 @@ void show(bigint* elt, int I)
 		printf("%x\n", elt[i]);
 	puts("");
 }
-/*bintodec() converts a binary integer of some specified length into decimal */
+
+/*bintodec() converts a binary integer into decimal */
 long long unsigned int bintodec(unsigned char* bin, unsigned int size)
 {
 	int i, j, k;
@@ -31,7 +30,7 @@ long long unsigned int bintodec(unsigned char* bin, unsigned int size)
 	}
 	return temp;
 }
-/*dectohex() converts a decimal int to a 8-digit hexadecimal int as a char array */
+/*dectohex() converts a decimal int to a 8-digit hexadecimal int  */
 unsigned char* dectohex(unsigned long long int dec)
 {
 	int i = 0, j, k, hh;
@@ -41,7 +40,6 @@ unsigned char* dectohex(unsigned long long int dec)
 	for (i = 0; i < 8; ++i)
 		hex[i] = '0';
 	j = 0;
-	// It uses the standard conversion routine i.e. dividing by base=16 and record the remainder
 		while ((temp > 0) && (j < 8))
 		{
 			hh = temp % 16;
@@ -64,8 +62,7 @@ unsigned char* dectohex(unsigned long long int dec)
 	}
 	return hex;
 }
-/*dectobin() is quite similar to dectohex() but much simpler. It converts a decimal
-to binary form (char array) of specified bit*/
+/*dectobin() converts a decimal to binary form (char array) of specified bit*/
 void dectobin(unsigned char* bin, unsigned long long int dec, int size)
 {
 	int i = 0, j, k;
@@ -125,7 +122,7 @@ display_bytewise(bigint B, unsigned int size)
 	}
 	puts(" ");
 }
-/*copy_bigint() copies a big integer to another (in array form)*/
+/*copy_bigint() copies a big integer to another */
 void copy_bigint(bigint* s, bigint* t, int size)
 {
 	int i;
@@ -351,8 +348,7 @@ void KEYGEN()
 		display_bytewise(Key[i], 16);
 	puts("-------------------------------");
 }
-/*IVSETUP() modifies the master state by modifying counter C (global) and also
-serves the User interface to choose between three different IVs*/
+/*IVSETUP() modifies the master state by modifying counter C (global)*/
 void IVSETUP()
 {
 	int i, j, k;
@@ -451,17 +447,18 @@ void GENERATE()
 	}
 	puts("-------------------------------");
 }
-/*main() function calls the sub-routines in order*/
+
+
 int main()
 {
 	int i = 0, j;
 	char k;
 	KEYGEN();
 	KEYSETUP();
-	puts("Do you want to use IV? (Press 1 for ’yes’ and any other key for’no’)\n");
+	puts("Use IV is optional. Do you want to use IV ? (Press 1 for Yes and any  key for No)\n");
 	scanf_s("%d", &i);
 	if (i == 1)
-		IVSETUP();/*It may be skipped if IV is not required by the user*/
+		IVSETUP();
 	GENERATE();
 	return 0;
 }
